@@ -2,6 +2,8 @@
 
 pub mod lexer;
 pub mod ast;
+pub mod semantica;
+pub mod analizador_semantico;
 lalrpop_util::lalrpop_mod!(pub gramatica, "/gramatica.rs");
 
 use lexer::Lexer;

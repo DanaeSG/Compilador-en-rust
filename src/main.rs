@@ -1,9 +1,9 @@
 // src/main.rs
 
+use compilador::analizador_semantico::AnalizadorSemantico;
 use compilador::parse;
 
-fn main() {
-    let src = r#"
+const SAMPLE_SRC: &str = r#"
 programa calculadora;
 
 vars resultado, temp : flotante;
@@ -81,8 +81,37 @@ inicio {
 fin
 "#;
 
-    match parse(src) {
-        Ok(ast)  => println!("Parsed OK:\n{:#?}", ast),
-        Err(err) => println!("Error: {}", err),
+fn compilar_y_analizar(src: &str, mostrar_ast: bool) -> Result<(), String> {
+    let ast = parse(src)?;
+    if mostrar_ast {
+        println!("Parsed OK:\n{:#?}", ast);
+    }
+
+    let mut sem = AnalizadorSemantico::new();
+    sem.analizar(&ast);
+    if sem.tiene_errores() {
+        return Err(sem.reporte());
+    }
+
+    Ok(())
+}
+
+fn main() {
+    let mut args = std::env::args().skip(1);
+    let path = args.next();
+    let show_ast = args.next().as_deref() == Some("--ast");
+
+    let (src, mostrar_ast) = match path {
+        Some(path) => {
+            let src = std::fs::read_to_string(&path)
+                .unwrap_or_else(|_| panic!("No se pudo leer '{}'", path));
+            (src, show_ast)
+        }
+        None => (SAMPLE_SRC.to_string(), true),
+    };
+
+    match compilar_y_analizar(&src, mostrar_ast) {
+        Ok(()) => {}
+        Err(msg) => eprintln!("{}", msg),
     }
 }
