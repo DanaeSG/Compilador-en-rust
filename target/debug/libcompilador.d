@@ -1,1 +1,0 @@
-/home/danae/Documents/compilador-rust/target/debug/libcompilador.rlib: /home/danae/Documents/compilador-rust/build.rs /home/danae/Documents/compilador-rust/src/ast.rs /home/danae/Documents/compilador-rust/src/lexer.rs /home/danae/Documents/compilador-rust/src/lib.rs /home/danae/Documents/compilador-rust/target/debug/build/compilador-02c6d35b6b2cd06e/out/gramatica.rs
