@@ -1,0 +1,17 @@
+programa p9;
+vars i, j, suma : entero;
+inicio {
+    i = 0;
+    suma = 0;
+
+    mientras (i < 3) haz {
+        j = 0;
+        mientras (j < 2) haz {
+            suma = suma + i + j;
+            j = j + 1;
+        };
+        i = i + 1;
+    };
+
+    escribe("suma=", suma);
+} fin

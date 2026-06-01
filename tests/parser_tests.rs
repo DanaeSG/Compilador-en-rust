@@ -107,3 +107,10 @@ fn p_15_function_call_statement() {
         "programa call; nula greet() { { escribe(\"hi\"); } }; inicio { greet(); } fin"
     ).is_ok());
 }
+
+#[test]
+fn p_16_return_statement() {
+    assert!(parse(
+        "programa ret; entero id(a:entero) { { regresa a; } }; inicio { } fin"
+    ).is_ok());
+}

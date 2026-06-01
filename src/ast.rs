@@ -1,7 +1,5 @@
-// src/ast.rs
-// Definición del Árbol de Sintaxis Abstracta (AST)
-// Cada nodo corresponde directamente a un no terminal de la gramática (CFG)
-// definida. El diseño prioriza tipado fuerte y facilidad de recorrido.
+// AST del lenguaje.
+// Lo produce el parser y lo consumen semantica y cuadruplos.
 
 // Programa (símbolo inicial)
 #[derive(Debug, Clone)]
@@ -69,6 +67,10 @@ pub enum Estatuto {
         cuerpo: Vec<Estatuto>,
     },
 
+    Regresa {
+        valor: Box<Expresion>, // solo para funciones no void;
+    },
+
     // Llamada a función como sentencia
     Llamada(Llamada),
 
@@ -107,7 +109,7 @@ pub struct Expresion {
 pub enum OpRel {
     Gt,   // >
     Lt,   // <
-    Neq,  // !=
+    Neq,  // distinto
     EqEq, // ==
 }
 

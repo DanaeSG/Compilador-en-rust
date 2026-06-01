@@ -1,18 +1,9 @@
-// src/lexer.rs
-// Analizador léxico (scanner) implementado con Logos.
-// Convierte la entrada en una secuencia de tokens tipados según la especificación.
-// La salida es consumida por LALRPOP en forma de triples (start, token, end).
+// Lexer del lenguaje con Logos.
+// Produce tokens con spans para el parser.
 
 use logos::Logos;
 
-/// Definición de todos los tokens del lenguaje.
-///
-/// Diseño:
-/// - Se utiliza `#[logos(skip ...)]` para ignorar whitespace automáticamente.
-/// - Orden de definición:
-///     - Palabras reservadas antes que identificadores
-///     - Flotantes antes que enteros
-/// - Los tokens con datos (payload) usan callbacks para parsear valores.
+// Definicion de tokens del lenguaje.
 #[derive(Logos, Debug, Clone, PartialEq)]
 #[logos(skip r"[ \t\r\n]+")] // Ignora espacios, tabs y saltos de línea
 pub enum Token {
@@ -30,6 +21,7 @@ pub enum Token {
     #[token("vars")]      Vars,
     #[token("entero")]    Entero,
     #[token("flotante")]  Flotante,
+    #[token("regresa")]   Regresa,
 
     // Identificadores
     // (letter | _)(letter | _ | digit)*
@@ -83,7 +75,7 @@ pub struct Lexer<'input> {
 }
 
 impl<'input> Lexer<'input> {
-    /// Crear lexer desde string fuente
+    // Crea lexer desde codigo fuente.
     pub fn new(src: &'input str) -> Self {
         Self {
             inner: Token::lexer(src).spanned(),

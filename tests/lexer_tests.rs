@@ -16,13 +16,13 @@ fn lex_tokens(src: &str) -> Vec<String> {
 
 #[test]
 fn l_01_reserved_words() {
-    let src = "programa inicio fin vars entero flotante si sino mientras haz nula escribe";
+    let src = "programa inicio fin vars entero flotante si sino mientras haz nula escribe regresa";
     let tokens = lex_tokens(src);
 
     for kw in &[
         "Programa", "Inicio", "Fin", "Vars",
         "Entero", "Flotante", "Si", "Sino",
-        "Mientras", "Haz", "Nula", "Escribe",
+        "Mientras", "Haz", "Nula", "Escribe", "Regresa",
     ] {
         assert!(tokens.contains(&kw.to_string()));
     }

@@ -1,0 +1,21 @@
+programa p10;
+vars x, y, z : entero;
+
+entero suma(a : entero, b : entero) {
+    {
+        regresa a + b;
+    }
+};
+
+entero doble(n : entero) {
+    {
+        regresa n + n;
+    }
+};
+
+inicio {
+    x = suma(2, 3);
+    y = doble(x);
+    z = suma(doble(1), 5);
+    escribe("x=", x, " y=", y, " z=", z);
+} fin

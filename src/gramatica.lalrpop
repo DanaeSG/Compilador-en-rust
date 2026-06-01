@@ -25,6 +25,7 @@ extern {
         "vars"      => Token::Vars,
         "entero"    => Token::Entero,
         "flotante"  => Token::Flotante,
+        "regresa"   => Token::Regresa,
         "id"        => Token::Id(<String>),
         "cte_ent"   => Token::CteEnt(<i64>),
         "cte_flot"  => Token::CteFlot(<f64>),
@@ -126,13 +127,14 @@ EstatutoList: Vec<Estatuto> = {
     => vec![],
 };
 
-// <ESTATUTO> ::= <ASIGNA> | <CONDICION> | <CICLO> | <LLAMADA> ; | <IMPRIME>
+// <ESTATUTO> ::= <ASIGNA> | <CONDICION> | <CICLO> | <LLAMADA> ; | <REGRESA> | <IMPRIME>
 //              | [ <ESTATUTO_LIST> ]
 Estatuto: Estatuto = {
     <a:Asigna>      => Estatuto::Asigna(a.0, Box::new(a.1)),
     <c:Condicion>   => c,
     <c:Ciclo>       => c,
     <ll:Llamada> ";" => Estatuto::Llamada(ll),
+    <r: Regresa>    => r,
     <i:Imprime>     => i,
     "[" <stmts:EstatutoList> "]" => Estatuto::Bloque(stmts),
 };
@@ -250,4 +252,9 @@ Factor: Factor = {
 Cte: Constante = {
     <n:"cte_ent">  => Constante::Entero(n),
     <f:"cte_flot"> => Constante::Flotante(f),
+};
+
+// <REGRESA> ::= <EXPRESION>
+Regresa: Estatuto = {
+    "regresa" <expr:Expresion> ";" => Estatuto::Regresa { valor: Box::new(expr) },
 };

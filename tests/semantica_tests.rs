@@ -67,14 +67,14 @@ fn cs_05_asigna_float_to_int_error() {
 #[test]
 fn tv_01_declarar_ok() {
     let mut t = TablaVariables::new();
-    assert!(t.declarar("x", TipoDato::Entero, false).is_ok());
+    assert!(t.declarar("x", TipoDato::Entero, false, -1).is_ok());
 }
 
 #[test]
 fn tv_02_doble_declaracion() {
     let mut t = TablaVariables::new();
-    t.declarar("x", TipoDato::Entero, false).unwrap();
-    let r = t.declarar("x", TipoDato::Flotante, false);
+    t.declarar("x", TipoDato::Entero, false, -1).unwrap();
+    let r = t.declarar("x", TipoDato::Flotante, false, -1);
     assert!(matches!(r, Err(ErrorSemantico::VariableDoblementeDeclada(_))));
 }
 
@@ -90,7 +90,7 @@ fn tv_03_buscar_no_declarada() {
 #[test]
 fn tv_04_buscar_ok() {
     let mut t = TablaVariables::new();
-    t.declarar("y", TipoDato::Flotante, false).unwrap();
+    t.declarar("y", TipoDato::Flotante, false, -1).unwrap();
     assert_eq!(t.buscar("y").unwrap().tipo, TipoDato::Flotante);
 }
 
@@ -128,7 +128,7 @@ fn df_03_buscar_funcion_no_declarada() {
 #[test]
 fn df_04_resolver_variable_global() {
     let mut d = DirectorioFunciones::new("prog");
-    d.declarar_variable("prog", "x", TipoDato::Entero).unwrap();
+    d.declarar_variable("prog", "x", TipoDato::Entero, -1).unwrap();
     d.registrar_funcion("f", TipoDato::Nula, vec![]).unwrap();
     assert_eq!(d.resolver_variable("f", "x").unwrap(), TipoDato::Entero);
 }
@@ -136,9 +136,9 @@ fn df_04_resolver_variable_global() {
 #[test]
 fn df_05_var_local_oculta_global() {
     let mut d = DirectorioFunciones::new("prog");
-    d.declarar_variable("prog", "x", TipoDato::Entero).unwrap();
+    d.declarar_variable("prog", "x", TipoDato::Entero, -1).unwrap();
     d.registrar_funcion("f", TipoDato::Nula, vec![]).unwrap();
-    d.declarar_variable("f", "x", TipoDato::Flotante).unwrap();
+    d.declarar_variable("f", "x", TipoDato::Flotante, -1).unwrap();
     assert_eq!(d.resolver_variable("f", "x").unwrap(), TipoDato::Flotante);
 }
 
@@ -215,7 +215,7 @@ inicio { } fin"#;
 fn sem_09_llamada_correcta() {
     let src = r#"programa t;
 vars r : entero;
-entero doble(n:entero) { { r = n + n; } };
+entero doble(n:entero) { { regresa n + n; } };
 inicio { r = doble(5); } fin"#;
     let sem = analizar(src);
     assert!(!sem.tiene_errores(), "{}", sem.reporte());
@@ -228,4 +228,43 @@ nula f() { vars local:entero; { local = 1; } };
 inicio { local = 2; } fin"#;
     let sem = analizar(src);
     assert!(sem.tiene_errores(), "local no deberia ser visible en main");
+}
+
+#[test]
+fn sem_11_regresa_tipo_correcto() {
+    let src = r#"programa t;
+entero id(a:entero) { { regresa a; } };
+inicio { } fin"#;
+    let sem = analizar(src);
+    assert!(!sem.tiene_errores(), "{}", sem.reporte());
+}
+
+#[test]
+fn sem_12_regresa_tipo_incorrecto() {
+    let src = r#"programa t;
+entero id(a:flotante) { { regresa a; } };
+inicio { } fin"#;
+    let sem = analizar(src);
+    assert!(sem.tiene_errores());
+    assert!(sem.reporte().contains("Retorno incompatible"));
+}
+
+#[test]
+fn sem_13_regresa_en_funcion_nula_error() {
+    let src = r#"programa t;
+nula f() { { regresa 1; } };
+inicio { } fin"#;
+    let sem = analizar(src);
+    assert!(sem.tiene_errores());
+    assert!(sem.reporte().contains("no debe tener 'regresa'"));
+}
+
+#[test]
+fn sem_14_falta_regresa_en_funcion_tipada() {
+    let src = r#"programa t;
+entero f() { { escribe("hola"); } };
+inicio { } fin"#;
+    let sem = analizar(src);
+    assert!(sem.tiene_errores());
+    assert!(sem.reporte().contains("debe tener al menos un 'regresa'"));
 }

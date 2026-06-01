@@ -5,7 +5,7 @@ use compilador::cuadruplos::GeneradorCuadruplos;
 use compilador::lexer::Lexer;
 use compilador::parse;
 
-const TEST_PROGRAMS: [&str; 7] = [
+const TEST_PROGRAMS: [&str; 11] = [
     "programas_prueba/p1_asignaciones.patito",
     "programas_prueba/p2_relacionales.patito",
     "programas_prueba/p3_parentesis.patito",
@@ -13,6 +13,10 @@ const TEST_PROGRAMS: [&str; 7] = [
     "programas_prueba/p5_unarios.patito",
     "programas_prueba/p6_stress_lineal.patito",
     "programas_prueba/p7_nonlineal.patito",
+    "programas_prueba/p8_si_sino.patito",
+    "programas_prueba/p9_mientras_anidado.patito",
+    "programas_prueba/p10_funciones_return.patito",
+    "programas_prueba/p11_control_y_funcion.patito",
 ];
 
 fn dump_lexer(src: &str) {
