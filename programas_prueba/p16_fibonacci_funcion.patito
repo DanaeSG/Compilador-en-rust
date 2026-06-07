@@ -1,0 +1,24 @@
+programa p16_fibonacci_funcion;
+vars total : entero;
+
+nula fibonacci_ciclico(limite : entero) {
+vars a, b, siguiente, contador : entero;
+{
+    a = 0;
+    b = 1;
+    contador = 0;
+
+    mientras (contador < limite) haz {
+        escribe("fib=", a);
+        siguiente = a + b;
+        a = b;
+        b = siguiente;
+        contador = contador + 1;
+    };
+}
+};
+
+inicio {
+    total = 7;
+    fibonacci_ciclico(total);
+} fin

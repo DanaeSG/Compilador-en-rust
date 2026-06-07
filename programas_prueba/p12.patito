@@ -1,0 +1,56 @@
+programa patito;
+
+vars i, j, p : entero;
+
+entero fact(j: entero) {
+vars i : entero;
+{
+    i = j + (p - j * 2 + j);
+
+    si (j > 1)
+    {
+        regresa (j * fact(j - 1));
+    }
+    sino
+    {
+        regresa (1);
+    };
+}
+};
+
+nula inicia(y: entero) {
+vars x : entero;
+{
+    x = -1;
+
+    mientras (x < 11) haz
+    {
+        escribe(y * x);
+        x = x + 1;
+    };
+}
+};
+
+inicio
+{
+    p = 6;
+    escribe(p);
+    j = p * 2;
+    i = - 1;
+
+    inicia(p * j - 5);
+
+    mientras (i < 11) haz
+    {
+        escribe(i * j - p);
+        i = i + 1;
+    };
+
+    mientras (i > 0) haz
+    {
+        escribe("resultado", fact(i + 2));
+        escribe("otro res:", fact(p * 2 - i));
+        i = i - 1;
+    };
+}
+fin

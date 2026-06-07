@@ -1,0 +1,17 @@
+programa p15_fibonacci_main;
+vars a, b, siguiente, contador, limite : entero;
+
+inicio {
+    a = 0;
+    b = 1;
+    contador = 0;
+    limite = 7;
+
+    mientras (contador < limite) haz {
+        escribe("fib=", a);
+        siguiente = a + b;
+        a = b;
+        b = siguiente;
+        contador = contador + 1;
+    };
+} fin

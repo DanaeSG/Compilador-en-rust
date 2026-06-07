@@ -1,0 +1,22 @@
+programa p14_factorial_funcion;
+vars n : entero;
+
+nula factorial_ciclico(valor : entero) {
+vars i, factorial : entero;
+{
+    i = 1;
+    factorial = 1;
+
+    mientras (i < valor + 1) haz {
+        factorial = factorial * i;
+        i = i + 1;
+    };
+
+    escribe("factorial=", factorial);
+}
+};
+
+inicio {
+    n = 5;
+    factorial_ciclico(n);
+} fin
