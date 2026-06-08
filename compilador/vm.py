@@ -233,7 +233,6 @@ class VirtualMachine:
         self.handlers = {
             "GOTO": self._op_goto,
             "GOTOF": self._op_gotof,
-            "GOTOT": self._op_gotot,
             "END": self._op_end,
             "ENDFUNC": self._op_endfunc,
             "PRINT": self._op_print,
@@ -309,10 +308,6 @@ class VirtualMachine:
     def _op_gotof(self, quad: Quadruple) -> None:
         condition = self.read(quad.arg1)
         self.ip = quad.res if condition == 0 else self.ip + 1
-
-    def _op_gotot(self, quad: Quadruple) -> None:
-        condition = self.read(quad.arg1)
-        self.ip = quad.res if condition != 0 else self.ip + 1
 
     def _op_end(self, quad: Quadruple) -> None:
         self.ip = len(self.program.quadruples)
