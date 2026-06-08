@@ -322,8 +322,8 @@ class QuadrupleGenerator:
         self.quadruples.items[gotof_idx].res = len(self.quadruples.items)
 
     def _generate_return(self, stmt: SyntaxNode, ambito: str) -> None:
-        # PN-NL22 / PN-NL23: validar retorno, copiar a la global homónima
-        # y marcar explícitamente el retorno de control con RETURN.
+        # PN-NL22 / PN-NL23: validar retorno, copiar explícitamente a la
+        # global homónima y luego marcar el retorno de control con RETURN.
         if ambito == self.program_name:
             raise SemanticError("RegresaFueraDeFuncion")
         entrada = self.directorio.buscar_funcion(ambito)
@@ -332,7 +332,9 @@ class QuadrupleGenerator:
         self._process_expression(return_expression(stmt), ambito)
         dir_expr, tipo_expr = self._pop_operand()
         self.cubo.consultar(entrada.tipo_retorno, tipo_expr, Operador.ASIGNA)
-        self.quadruples.push(Quadruple("RETURN", None, None, dir_expr))
+        dir_global = self.directorio.resolver_dir_variable(self.program_name, ambito)
+        self.quadruples.push(Quadruple("=", dir_expr, None, dir_global))
+        self.quadruples.push(Quadruple("RETURN"))
 
     def _generate_call(self, llamada_node: SyntaxNode, ambito: str, as_expression: bool) -> TipoDato:
         nombre = call_name(llamada_node)

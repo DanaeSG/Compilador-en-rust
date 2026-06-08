@@ -399,11 +399,6 @@ class VirtualMachine:
         self.ip = quad.res
 
     def _op_return(self, quad: Quadruple) -> None:
-        function_name = self.current_frame.function_name
-        global_entry = self.program.directorio.funciones[self.program.directorio.nombre_prog].tabla_vars.buscar(
-            function_name
-        )
-        self.globals.write(global_entry.dir_virtual, self.read(quad.res))
         self._jump_to_caller()
 
 
