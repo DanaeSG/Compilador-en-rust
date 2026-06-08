@@ -118,9 +118,7 @@ def iter_tokens(src: str):
     lexer = PatitoLexer()
     for token in lexer.tokenize(src):
         start = token.index
-        end = start + len(str(token.value if token.type not in {"CTE_ENT", "CTE_FLOT"} else token.value))
-        if token.type in {"PROGRAMA", "INICIO", "FIN", "NULA", "ESCRIBE", "MIENTRAS", "HAZ", "SI", "SINO", "VARS", "ENTERO", "FLOTANTE", "REGRESA"}:
-            end = start + len(token.value)
-        elif token.type == "LETRERO":
-            end = start + len(token.value) + 2
+        end = start + len(token.value if token.type not in {"CTE_ENT", "CTE_FLOT"} else str(token.value))
+        if token.type == "LETRERO":
+            end += 2
         yield start, token, end

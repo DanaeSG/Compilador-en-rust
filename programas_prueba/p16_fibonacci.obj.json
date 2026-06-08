@@ -1,0 +1,214 @@
+{
+  "dirfunc": {
+    "nombre_prog": "p16_fibonacci_funcion",
+    "funciones": {
+      "p16_fibonacci_funcion": {
+        "tipo_retorno": "nula",
+        "num_params": 0,
+        "dir_inicio": 0,
+        "tipos_params": [],
+        "nombres_params": [],
+        "tabla_vars": {
+          "total": {
+            "tipo": "entero",
+            "es_param": false,
+            "dir_virtual": 1000
+          }
+        }
+      },
+      "fibonacci_ciclico": {
+        "tipo_retorno": "nula",
+        "num_params": 1,
+        "dir_inicio": 1,
+        "tipos_params": [
+          "entero"
+        ],
+        "nombres_params": [
+          "limite"
+        ],
+        "tabla_vars": {
+          "limite": {
+            "tipo": "entero",
+            "es_param": true,
+            "dir_virtual": 3000
+          },
+          "a": {
+            "tipo": "entero",
+            "es_param": false,
+            "dir_virtual": 3001
+          },
+          "b": {
+            "tipo": "entero",
+            "es_param": false,
+            "dir_virtual": 3002
+          },
+          "siguiente": {
+            "tipo": "entero",
+            "es_param": false,
+            "dir_virtual": 3003
+          },
+          "contador": {
+            "tipo": "entero",
+            "es_param": false,
+            "dir_virtual": 3004
+          }
+        }
+      }
+    }
+  },
+  "constants": [
+    {
+      "address": 8000,
+      "type": "entero",
+      "value": 0
+    },
+    {
+      "address": 8001,
+      "type": "entero",
+      "value": 1
+    },
+    {
+      "address": 8002,
+      "type": "entero",
+      "value": 7
+    },
+    {
+      "address": 10000,
+      "type": "string",
+      "value": "fib="
+    },
+    {
+      "address": 10001,
+      "type": "string",
+      "value": "fibonacci_ciclico"
+    }
+  ],
+  "quadruples": [
+    {
+      "op": "GOTO",
+      "arg1": null,
+      "arg2": null,
+      "res": 16
+    },
+    {
+      "op": "=",
+      "arg1": 8000,
+      "arg2": null,
+      "res": 3001
+    },
+    {
+      "op": "=",
+      "arg1": 8001,
+      "arg2": null,
+      "res": 3002
+    },
+    {
+      "op": "=",
+      "arg1": 8000,
+      "arg2": null,
+      "res": 3004
+    },
+    {
+      "op": "<",
+      "arg1": 3004,
+      "arg2": 3000,
+      "res": 5000
+    },
+    {
+      "op": "GOTOF",
+      "arg1": 5000,
+      "arg2": null,
+      "res": 15
+    },
+    {
+      "op": "PRINTS",
+      "arg1": 10000,
+      "arg2": null,
+      "res": null
+    },
+    {
+      "op": "PRINT",
+      "arg1": 3001,
+      "arg2": null,
+      "res": null
+    },
+    {
+      "op": "+",
+      "arg1": 3001,
+      "arg2": 3002,
+      "res": 5001
+    },
+    {
+      "op": "=",
+      "arg1": 5001,
+      "arg2": null,
+      "res": 3003
+    },
+    {
+      "op": "=",
+      "arg1": 3002,
+      "arg2": null,
+      "res": 3001
+    },
+    {
+      "op": "=",
+      "arg1": 3003,
+      "arg2": null,
+      "res": 3002
+    },
+    {
+      "op": "+",
+      "arg1": 3004,
+      "arg2": 8001,
+      "res": 5002
+    },
+    {
+      "op": "=",
+      "arg1": 5002,
+      "arg2": null,
+      "res": 3004
+    },
+    {
+      "op": "GOTO",
+      "arg1": null,
+      "arg2": null,
+      "res": 4
+    },
+    {
+      "op": "ENDFUNC",
+      "arg1": null,
+      "arg2": null,
+      "res": null
+    },
+    {
+      "op": "=",
+      "arg1": 8002,
+      "arg2": null,
+      "res": 1000
+    },
+    {
+      "op": "ERA",
+      "arg1": 10001,
+      "arg2": null,
+      "res": null
+    },
+    {
+      "op": "PARAM",
+      "arg1": 1000,
+      "arg2": null,
+      "res": 3000
+    },
+    {
+      "op": "GOSUB",
+      "arg1": 10001,
+      "arg2": null,
+      "res": 1
+    },
+    {
+      "op": "END",
+      "arg1": null,
+      "arg2": null,
+      "res": null
+    }
+  ]
+}

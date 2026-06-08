@@ -32,7 +32,7 @@ class CompilationResult:
 
 
 def build_syntax_tree(src: str) -> SyntaxNode:
-    """Construye el árbol sintáctico concreto a partir del código fuente."""
+    """Construye el árbol sintáctico a partir del código fuente."""
 
     return parse_source(src)
 

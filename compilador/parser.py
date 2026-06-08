@@ -1,10 +1,6 @@
 """Parser SLY puro.
 
-Este módulo solo reconoce la gramática y construye un árbol sintáctico
-concreto (CST). No ejecuta análisis semántico ni generación de código.
-
-La estructura de los nodos busca parecerse al árbol sintáctico visto en
-clase: conserva no terminales, terminales y agrupaciones por producción.
+Reconoce la gramática y construye un árbol sintáctico concreto (CST). 
 """
 
 from sly import Parser

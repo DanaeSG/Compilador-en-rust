@@ -1,4 +1,4 @@
-"""Árbol sintáctico (ST).
+"""Árbol sintáctico concreto (CST).
 """
 
 from __future__ import annotations

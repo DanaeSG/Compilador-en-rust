@@ -377,10 +377,12 @@ class QuadrupleGenerator:
         return entrada.tipo_retorno
 
     def _process_expression(self, expr_node: SyntaxNode, ambito: str) -> None:
+        # children[0]: parte aritmética izquierda; children[1]: operador relacional opcional.
         self._process_exp(expr_node.children[0], ambito)
         exp_op = expr_node.children[1]
         if exp_op.children:
             # PN-L06: operador relacional.
+            # children[0]: operador; children[1]: expresión aritmética derecha.
             op = {
                 ">": Operador.MAYOR,
                 "<": Operador.MENOR,
@@ -392,18 +394,22 @@ class QuadrupleGenerator:
             self._reduce_expression(ambito)
 
     def _process_exp(self, exp_node: SyntaxNode, ambito: str) -> None:
+        # children[0]: primer término; children[1]: lista de repeticiones (+/- término).
         self._process_term(exp_node.children[0], ambito)
         for item in exp_node.children[1].children:
             # PN-L04: + o -.
+            # children[0]: operador; children[1]: término siguiente.
             op = Operador.SUMA if leaf_value(item.children[0]) == "+" else Operador.RESTA
             self.operator_stack.append(op)
             self._process_term(item.children[1], ambito)
             self._reduce_expression(ambito)
 
     def _process_term(self, term_node: SyntaxNode, ambito: str) -> None:
+        # children[0]: primer factor; children[1]: lista de repeticiones (*// factor).
         self._process_factor(term_node.children[0], ambito)
         for item in term_node.children[1].children:
             # PN-L05: * o /.
+            # children[0]: operador; children[1]: factor siguiente.
             op = Operador.MUL if leaf_value(item.children[0]) == "*" else Operador.DIV
             self.operator_stack.append(op)
             self._process_factor(item.children[1], ambito)
@@ -411,12 +417,15 @@ class QuadrupleGenerator:
 
     def _process_factor(self, factor_node: SyntaxNode, ambito: str) -> None:
         if factor_node.symbol == "FactorParen":
+            # children[1]: expresión dentro de los paréntesis.
             self._process_expression(factor_node.children[1], ambito)
         elif factor_node.symbol == "FactorPosId":
             # PN-L02: identificador.
+            # children[1]: nombre del identificador.
             self._push_variable(leaf_value(factor_node.children[1]), ambito)
         elif factor_node.symbol == "FactorNegId":
             # PN-L03: negación unaria como 0 - id.
+            # children[1]: nombre del identificador negado.
             nombre = leaf_value(factor_node.children[1])
             tipo = self.directorio.resolver_variable(ambito, nombre)
             dir_id = self.directorio.resolver_dir_variable(ambito, nombre)
@@ -428,23 +437,29 @@ class QuadrupleGenerator:
             self.operator_stack.append(Operador.RESTA)
             self._reduce_expression(ambito)
         elif factor_node.symbol == "FactorPosCte":
+            # children[1]: nodo constante envuelto.
             cte = factor_node.children[1]
             if cte.symbol == "CteEnt":
+                # children[0]: literal entero.
                 value = leaf_value(cte.children[0])
                 self.operand_stack.append(self.memory.alloc_const_int(value))
                 self.type_stack.append(TipoDato.ENTERO)
             else:
+                # children[0]: literal flotante.
                 value = leaf_value(cte.children[0])
                 self.operand_stack.append(self.memory.alloc_const_float(value))
                 self.type_stack.append(TipoDato.FLOTANTE)
         elif factor_node.symbol == "FactorNegCte":
+            # children[1]: nodo constante envuelto.
             cte = factor_node.children[1]
             if cte.symbol == "CteEnt":
+                # children[0]: literal entero.
                 value = leaf_value(cte.children[0])
                 dir_zero = self.memory.alloc_const_int(0)
                 dir_cte = self.memory.alloc_const_int(value)
                 tipo = TipoDato.ENTERO
             else:
+                # children[0]: literal flotante.
                 value = leaf_value(cte.children[0])
                 dir_zero = self.memory.alloc_const_float(0.0)
                 dir_cte = self.memory.alloc_const_float(value)
@@ -457,16 +472,20 @@ class QuadrupleGenerator:
             self._reduce_expression(ambito)
         elif factor_node.symbol == "FactorId":
             # PN-L02: identificador.
+            # children[0]: nombre del identificador.
             self._push_variable(leaf_value(factor_node.children[0]), ambito)
         elif factor_node.symbol == "FactorLlamada":
+            # children[0]: nodo de llamada a función.
             self._generate_call(factor_node.children[0], ambito, as_expression=True)
         elif factor_node.children[0].symbol == "CteEnt":
             # PN-L01: constante entera.
+            # children[0]: nodo CteEnt; su children[0] es la hoja con el literal.
             value = leaf_value(factor_node.children[0].children[0])
             self.operand_stack.append(self.memory.alloc_const_int(value))
             self.type_stack.append(TipoDato.ENTERO)
         else:
             # PN-L01: constante flotante.
+            # children[0]: nodo CteFlt; su children[0] es la hoja con el literal.
             value = leaf_value(factor_node.children[0].children[0])
             self.operand_stack.append(self.memory.alloc_const_float(value))
             self.type_stack.append(TipoDato.FLOTANTE)

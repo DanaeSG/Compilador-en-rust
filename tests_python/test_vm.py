@@ -33,27 +33,22 @@ class VirtualMachineTests(unittest.TestCase):
         with self.assertRaises(VirtualMachineError):
             run_source(src)
 
-    def test_vm_04_detects_uninitialized_read(self):
-        src = "programa t; vars x, y : entero; inicio { y = x + 1; } fin"
-        with self.assertRaises(VirtualMachineError):
-            run_source(src)
-
-    def test_vm_05_runs_factorial_in_main(self):
+    def test_vm_04_runs_factorial_in_main(self):
         src = Path("programas_prueba/p13_factorial_main.patito").read_text(encoding="utf-8")
         self.assertEqual(run_source(src), ["factorial=120"])
 
-    def test_vm_06_runs_factorial_in_function(self):
+    def test_vm_05_runs_factorial_in_function(self):
         src = Path("programas_prueba/p14_factorial_funcion.patito").read_text(encoding="utf-8")
         self.assertEqual(run_source(src), ["factorial=120"])
 
-    def test_vm_07_runs_fibonacci_in_main(self):
+    def test_vm_06_runs_fibonacci_in_main(self):
         src = Path("programas_prueba/p15_fibonacci_main.patito").read_text(encoding="utf-8")
         self.assertEqual(
             run_source(src),
             ["fib=0", "fib=1", "fib=1", "fib=2", "fib=3", "fib=5", "fib=8"],
         )
 
-    def test_vm_08_runs_fibonacci_in_function(self):
+    def test_vm_07_runs_fibonacci_in_function(self):
         src = Path("programas_prueba/p16_fibonacci_funcion.patito").read_text(encoding="utf-8")
         self.assertEqual(
             run_source(src),

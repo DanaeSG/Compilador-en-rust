@@ -1,4 +1,4 @@
-"""CLI principal del compilador en Python."""
+"""CLI principal del compilador."""
 
 import sys
 from pathlib import Path
@@ -148,8 +148,7 @@ def main(argv: list[str] | None = None) -> int:
             return 1
 
     if not has_output_flag:
-        show_sem = True
-        show_quad = True
+        run_vm = True
 
     if path is not None:
         src = Path(path).read_text(encoding="utf-8")

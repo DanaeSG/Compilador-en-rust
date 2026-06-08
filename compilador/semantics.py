@@ -1,7 +1,7 @@
 """Análisis semántico del compilador.
 
-Este módulo aplica la semántica estática después del parser, recorriendo
-el árbol sintáctico concreto del programa.
+Este módulo aplica la semántica después del parser, recorriendo
+el árbol sintáctico del programa.
 
 Los comentarios con `PN-S##` señalan los puntos neurálgicos documentados.
 """
@@ -141,8 +141,6 @@ class CuboSemantico:
     tabla: dict[tuple[TipoDato, TipoDato, Operador], TipoDato] = field(default_factory=dict)
 
     def __post_init__(self):
-        if self.tabla:
-            return
         for op in (Operador.SUMA, Operador.RESTA, Operador.MUL, Operador.DIV):
             self.tabla[(TipoDato.ENTERO, TipoDato.ENTERO, op)] = TipoDato.ENTERO
             self.tabla[(TipoDato.ENTERO, TipoDato.FLOTANTE, op)] = TipoDato.FLOTANTE
@@ -349,6 +347,7 @@ class SemanticAnalyzer:
 
     def _registrar_declaraciones(self, vars_node: SyntaxNode, ambito: str) -> None:
         for decl in vars_node.children:
+            # children[3]: tipo declarado; children[1]: lista de identificadores.
             tipo = TipoDato.from_tipo_node(decl.children[3])
             ids = self._extraer_ids(decl.children[1])
             for nombre in ids:
@@ -486,10 +485,12 @@ class SemanticAnalyzer:
         return entrada.tipo_retorno
 
     def _inferir_expresion(self, expr_node: SyntaxNode, ambito: str) -> TipoDato:
+        # children[0]: parte aritmética izquierda; children[1]: operador relacional opcional.
         tipo_izq = self._inferir_exp(expr_node.children[0], ambito)
         exp_op = expr_node.children[1]
         if not exp_op.children:
             return tipo_izq
+        # children[0]: operador; children[1]: parte aritmética derecha.
         tipo_der = self._inferir_exp(exp_op.children[1], ambito)
         op = {
             ">": Operador.MAYOR,
@@ -507,8 +508,10 @@ class SemanticAnalyzer:
             return tipo_izq
 
     def _inferir_exp(self, exp_node: SyntaxNode, ambito: str) -> TipoDato:
+        # children[0]: primer término; children[1]: lista de repeticiones (+/- término).
         tipo = self._inferir_termino(exp_node.children[0], ambito)
         for item in exp_node.children[1].children:
+            # children[0]: operador; children[1]: término siguiente.
             tipo_der = self._inferir_termino(item.children[1], ambito)
             op = Operador.SUMA if leaf_value(item.children[0]) == "+" else Operador.RESTA
             try:
@@ -521,8 +524,10 @@ class SemanticAnalyzer:
         return tipo
 
     def _inferir_termino(self, term_node: SyntaxNode, ambito: str) -> TipoDato:
+        # children[0]: primer factor; children[1]: lista de repeticiones (*// factor).
         tipo = self._inferir_factor(term_node.children[0], ambito)
         for item in term_node.children[1].children:
+            # children[0]: operador; children[1]: factor siguiente.
             tipo_der = self._inferir_factor(item.children[1], ambito)
             op = Operador.MUL if leaf_value(item.children[0]) == "*" else Operador.DIV
             try:
@@ -537,16 +542,21 @@ class SemanticAnalyzer:
     def _inferir_factor(self, factor_node: SyntaxNode, ambito: str) -> TipoDato:
         symbol = factor_node.symbol
         if symbol == "FactorParen":
+            # children[1]: expresión dentro de paréntesis.
             return self._inferir_expresion(factor_node.children[1], ambito)
         if symbol == "FactorPosId" or symbol == "FactorNegId":
             # PN-S06: resolución de identificadores.
+            # children[1]: nombre del identificador.
             return self.directorio.resolver_variable(ambito, leaf_value(factor_node.children[1]))
         if symbol == "FactorPosCte" or symbol == "FactorNegCte":
+            # children[1]: nodo constante envuelto.
             cte = factor_node.children[1]
             return TipoDato.ENTERO if cte.symbol == "CteEnt" else TipoDato.FLOTANTE
         if symbol == "FactorId":
+            # children[0]: nombre del identificador.
             return self.directorio.resolver_variable(ambito, leaf_value(factor_node.children[0]))
         if symbol == "FactorLlamada":
+            # children[0]: nodo de llamada a función.
             tipo = self._inferir_llamada(factor_node.children[0], ambito)
             if tipo == TipoDato.NULA:
                 self.add_error(
@@ -556,6 +566,7 @@ class SemanticAnalyzer:
                     )
                 )
             return tipo
+            # children[0]: nodo CteEnt o CteFlt.
         cte = factor_node.children[0]
         return TipoDato.ENTERO if cte.symbol == "CteEnt" else TipoDato.FLOTANTE
 
@@ -600,8 +611,10 @@ class SemanticAnalyzer:
         params: list[tuple[str, TipoDato]] = []
         for child in params_node.children:
             if child.symbol == "Param":
+                # children[0]: tipo; children[2]: nombre del parámetro.
                 params.append((leaf_value(child.children[0]), TipoDato.from_tipo_node(child.children[2])))
             elif child.symbol == "ParamListItem":
+                # children[1]: nombre del parámetro; children[3]: tipo del parámetro.
                 params.append((leaf_value(child.children[1]), TipoDato.from_tipo_node(child.children[3])))
         return params
 

@@ -2,7 +2,7 @@
 
 Diseño general:
 - La VM interpreta los cuádruplos ya generados por el compilador.
-- La memoria se resuelve por dirección virtual, sin arreglos gigantes.
+- La memoria se resuelve por dirección virtual.
 - Cada llamada crea un `ActivationRecord` con locales y temporales propios.
 - Las constantes viven en un segmento separado y de solo lectura.
 - El mismo modelo sirve tanto para ejecución directa como para archivo `.obj`.
@@ -83,8 +83,7 @@ def _segmento_desde_direccion(address: int) -> str:
 class MemorySegment:
     """Segmento dinámico indexado por dirección virtual.
 
-    Se usa un diccionario porque las direcciones virtuales son dispersas y
-    porque solo necesitamos almacenar celdas realmente utilizadas.
+    Se usa un diccionario porque solo necesitamos almacenar celdas realmente utilizadas.
     """
 
     values_by_address: dict[int, object] = field(default_factory=dict)
@@ -160,7 +159,7 @@ class ActivationRecord:
 class ObjectProgram:
     """Representación serializable de un programa compilado.
 
-    Funciona como frontera estable entre compilación y ejecución: empaqueta
+    Funciona como frontera entre compilación y ejecución: empaqueta
     directorio de funciones, tabla de constantes y cuádruplos.
     """
 
@@ -219,16 +218,9 @@ class VirtualMachine:
     """Interpreta cuádruplos usando memoria virtual dinámica.
     """
 
-    def __init__(
-        self,
-        program: ObjectProgram,
-        *,
-        max_call_depth: int = 1000,
-        input_provider=None,
-    ):
+    def __init__(self, program: ObjectProgram, *, max_call_depth: int = 1000):
         self.program = program
         self.max_call_depth = max_call_depth
-        self.input_provider = input_provider or input
         self.globals = MemorySegment()
         self.constants = MemorySegment(read_only=True)
         for address, value in program.constantes.items():
@@ -246,7 +238,6 @@ class VirtualMachine:
             "ENDFUNC": self._op_endfunc,
             "PRINT": self._op_print,
             "PRINTS": self._op_prints,
-            "READ": self._op_read,
             "=": self._op_assign,
             "+": self._op_add,
             "-": self._op_sub,
@@ -335,18 +326,6 @@ class VirtualMachine:
 
     def _op_prints(self, quad: Quadruple) -> None:
         self._current_line.append(str(self.read(quad.arg1)))
-        self.ip += 1
-
-    def _op_read(self, quad: Quadruple) -> None:
-        raw = self.input_provider()
-        tipo = _tipo_desde_direccion(quad.res)
-        if tipo == TipoDato.ENTERO:
-            value = int(raw)
-        elif tipo == TipoDato.FLOTANTE:
-            value = float(raw)
-        else:
-            value = raw
-        self.write(quad.res, value)
         self.ip += 1
 
     def _op_assign(self, quad: Quadruple) -> None:
