@@ -56,7 +56,7 @@ class PatitoLexer(Lexer):
         RBRACKET,
     }
 
-    ignore = " \t\r\n"
+    ignore = " \t\r"
 
     ID = r"[a-zA-Z_][a-zA-Z_0-9]*"
     ID["programa"] = PROGRAMA
@@ -95,6 +95,10 @@ class PatitoLexer(Lexer):
     RBRACE = r"\}"
     LBRACKET = r"\["
     RBRACKET = r"\]"
+
+    @_(r"\n+")
+    def ignore_newline(self, token):
+        self.lineno += len(token.value)
 
     def CTE_FLOT(self, token):
         token.value = float(token.value)

@@ -367,7 +367,9 @@ class PatitoParser(Parser):
     def error(self, token):
         if token is None:
             raise SyntaxError("Error de sintaxis: fin de archivo inesperado")
-        raise SyntaxError(f"Error de sintaxis cerca de '{token.value}'")
+        raise SyntaxError(
+            f"Error de sintaxis cerca de '{token.value}', línea {token.lineno})"
+        )
 
 
 def parse_source(src: str) -> SyntaxNode:

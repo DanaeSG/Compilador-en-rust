@@ -2,6 +2,7 @@
 
 import unittest
 
+from compilador.compiler import build_syntax_tree
 from compilador.syntax_tree import program_funcs, program_vars
 
 from tests_python.test_support import parse_ok
@@ -75,6 +76,12 @@ class ParserTests(unittest.TestCase):
 
     def test_p_16_return_statement(self):
         parse_ok("programa ret; entero id(a:entero) { { regresa a; } }; inicio { } fin")
+
+    def test_p_17_reports_syntax_error_line_and_token(self):
+        src = "programa t;\ninicio { escribe(1) } fin"
+        with self.assertRaises(SyntaxError) as ctx:
+            build_syntax_tree(src)
+        self.assertIn("línea 2", str(ctx.exception))
 
 
 if __name__ == "__main__":

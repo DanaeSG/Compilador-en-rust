@@ -18,6 +18,7 @@ class QuadrupleSmokeTests(unittest.TestCase):
         self.assertIn("GOSUB", dump)
         self.assertIn("RETURN", dump)
         self.assertIn("(=, 5000, _, 1001)", dump)
+        self.assertIn("(RETURN, _, _, 1001)", dump)
 
 
 if __name__ == "__main__":

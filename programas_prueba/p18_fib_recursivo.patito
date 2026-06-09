@@ -1,0 +1,29 @@
+programa fibb;
+
+vars n, pruebas : entero;
+
+entero fib(n : entero) {
+    {
+        si (n == 1) {
+            regresa 1;
+        } sino {
+            si (n < 1) {
+                regresa 0;
+            };
+        };
+
+        regresa fib(n - 1) + fib(n - 2);
+    }
+};
+
+inicio 
+{
+    pruebas = 8;
+    n = 0;
+    mientras (n < pruebas) haz {
+        escribe(fib(n));
+        escribe(" ");
+        n = n + 1;
+    };
+}
+fin

@@ -334,7 +334,7 @@ class QuadrupleGenerator:
         self.cubo.consultar(entrada.tipo_retorno, tipo_expr, Operador.ASIGNA)
         dir_global = self.directorio.resolver_dir_variable(self.program_name, ambito)
         self.quadruples.push(Quadruple("=", dir_expr, None, dir_global))
-        self.quadruples.push(Quadruple("RETURN"))
+        self.quadruples.push(Quadruple("RETURN", None, None, dir_global))
 
     def _generate_call(self, llamada_node: SyntaxNode, ambito: str, as_expression: bool) -> TipoDato:
         nombre = call_name(llamada_node)

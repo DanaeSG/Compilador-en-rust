@@ -32,6 +32,8 @@ TEST_PROGRAMS = [
     "programas_prueba/p14_factorial_funcion.patito",
     "programas_prueba/p15_fibonacci_main.patito",
     "programas_prueba/p16_fibonacci_funcion.patito",
+    "programas_prueba/p17_pelos.patito",
+    "programas_prueba/p18_fib_recursivo.patito",
 ]
 
 
